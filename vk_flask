@@ -1,0 +1,25 @@
+
+from flask import Flask, jsonify
+from flask import request
+import requests
+
+app = Flask(__name__)
+
+def getVk(id):
+    token = "93fbcf7693fbcf7693fbcf767e939048fe993fb93fbcf76cedaf15c818323ec6029905f"
+    url = "https://api.vk.com/method/users.get"
+    param = {"user_id": id, "v": 5.9, "access_token": token, "fields": "bdate,sex,verified,contacts,country,city,education,last_seen,followers_count,counters,relation,personal,activities,interests,connections"}
+
+    r = requests.get(url, params=param)
+
+    data = r.json()
+    return data['response']
+
+@app.route('/info', methods=['POST'])
+def tasks():
+    id = request.json['id']
+    vk_data = getVk(id)
+    return jsonify(vk_data)
+
+if __name__ == '__main__':
+    app.run(debug=True)
